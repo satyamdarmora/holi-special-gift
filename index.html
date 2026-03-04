@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>🎁 You've received a Holi Gift!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    background: #fff8f0;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* --- GIFT SCREEN --- */
+  #gift-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #fff8f0 0%, #ffe8d6 100%);
+    cursor: pointer;
+    position: relative;
+    z-index: 100;
+  }
+
+  #gift-screen h1 {
+    font-size: clamp(1.4rem, 5vw, 2.2rem);
+    color: #d4500a;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 0 20px;
+  }
+
+  #gift-screen p {
+    font-size: clamp(0.95rem, 3vw, 1.15rem);
+    color: #888;
+    margin-bottom: 40px;
+  }
+
+  .gift-box {
+    position: relative;
+    cursor: pointer;
+    animation: giftBounce 1.5s ease-in-out infinite;
+  }
+
+  .gift-box .box {
+    width: 120px; height: 100px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 8px 30px rgba(238, 90, 36, 0.3);
+  }
+
+  .gift-box .box::before,
+  .gift-box .box::after {
+    content: '';
+    position: absolute;
+    background: #ffd32a;
+  }
+
+  .gift-box .box::before {
+    width: 20px; height: 100%;
+    left: 50%; transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .gift-box .box::after {
+    width: 100%; height: 20px;
+    top: 50%; transform: translateY(-50%);
+    border-radius: 2px;
+  }
+
+  .gift-box .lid {
+    width: 135px; height: 30px;
+    background: linear-gradient(135deg, #ff4757, #d63031);
+    border-radius: 6px 6px 0 0;
+    margin: 0 auto 0;
+    position: relative;
+    left: -7.5px;
+    box-shadow: 0 -2px 10px rgba(214, 48, 49, 0.2);
+  }
+
+  .gift-box .lid::before {
+    content: '';
+    position: absolute;
+    width: 20px; height: 100%;
+    left: 50%; transform: translateX(-50%);
+    background: #ffd32a;
+    border-radius: 2px;
+  }
+
+  .gift-box .bow {
+    width: 50px; height: 25px;
+    position: absolute;
+    top: -18px; left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .gift-box .bow::before,
+  .gift-box .bow::after {
+    content: '';
+    position: absolute;
+    width: 25px; height: 25px;
+    border-radius: 50% 50% 0 50%;
+    background: #ffd32a;
+  }
+
+  .gift-box .bow::before { left: 0; transform: rotate(-30deg); }
+  .gift-box .bow::after { right: 0; transform: rotate(30deg) scaleX(-1); }
+
+  @keyframes giftBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .tap-hint {
+    margin-top: 35px;
+    font-size: clamp(1rem, 3.5vw, 1.2rem);
+    color: #d4500a;
+    font-weight: 600;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* --- PRANK SCREEN --- */
+  #prank-screen {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 200;
+    overflow: hidden;
+  }
+
+  #prank-screen.active { display: block; }
+
+  #prank-screen.shake {
+    animation: screenShake 0.6s ease-in-out;
+  }
+
+  @keyframes screenShake {
+    0%, 100% { transform: translate(0); }
+    10% { transform: translate(-8px, 5px); }
+    20% { transform: translate(8px, -5px); }
+    30% { transform: translate(-5px, 8px); }
+    40% { transform: translate(5px, -8px); }
+    50% { transform: translate(-8px, -5px); }
+    60% { transform: translate(8px, 5px); }
+    70% { transform: translate(-5px, -8px); }
+    80% { transform: translate(5px, 8px); }
+    90% { transform: translate(-8px, 5px); }
+  }
+
+  .bg-cycle {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    animation: bgCycle 3s linear infinite;
+    z-index: 0;
+  }
+
+  @keyframes bgCycle {
+    0% { background: #ff6b6b; }
+    14% { background: #ffa502; }
+    28% { background: #ffd32a; }
+    42% { background: #2ed573; }
+    56% { background: #1e90ff; }
+    70% { background: #a55eea; }
+    84% { background: #ff4757; }
+    100% { background: #ff6b6b; }
+  }
+
+  /* Splash spots */
+  .splash {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    animation: splashIn 0.5s ease-out forwards;
+  }
+
+  @keyframes splashIn {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.85; }
+  }
+
+  /* Central message */
+  .main-msg {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+    opacity: 0;
+    animation: msgAppear 0.8s 0.5s ease-out forwards;
+  }
+
+  @keyframes msgAppear {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+
+  .main-msg h1 {
+    font-size: clamp(2.2rem, 10vw, 4.5rem);
+    color: #fff;
+    text-shadow: 3px 3px 0 #d63031, -2px -2px 0 #6c5ce7, 4px 0 0 #00b894;
+    line-height: 1.1;
+    animation: colorText 2s linear infinite;
+  }
+
+  @keyframes colorText {
+    0% { text-shadow: 3px 3px 0 #d63031, -2px -2px 0 #6c5ce7, 4px 0 0 #00b894; }
+    33% { text-shadow: 3px 3px 0 #ffa502, -2px -2px 0 #ff4757, 4px 0 0 #a55eea; }
+    66% { text-shadow: 3px 3px 0 #2ed573, -2px -2px 0 #ffd32a, 4px 0 0 #1e90ff; }
+    100% { text-shadow: 3px 3px 0 #d63031, -2px -2px 0 #6c5ce7, 4px 0 0 #00b894; }
+  }
+
+  .main-msg .sub {
+    font-size: clamp(1rem, 4vw, 1.6rem);
+    color: #fff;
+    margin-top: 10px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+  }
+
+  /* Fake warning */
+  .warning-bar {
+    position: fixed;
+    bottom: 80px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.75);
+    color: #ffd32a;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: clamp(0.75rem, 2.8vw, 0.95rem);
+    z-index: 20;
+    text-align: center;
+    opacity: 0;
+    animation: warnAppear 0.5s 2s ease-out forwards;
+    max-width: 90vw;
+    backdrop-filter: blur(8px);
+  }
+
+  @keyframes warnAppear {
+    0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  /* Clean button */
+  .clean-btn {
+    position: fixed;
+    bottom: 25px; left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    color: #d63031;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 50px;
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 20;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    opacity: 0;
+    animation: warnAppear 0.5s 3s ease-out forwards;
+    transition: transform 0.2s;
+  }
+
+  .clean-btn:active { transform: translateX(-50%) scale(0.95); }
+
+  /* Confetti */
+  .confetti {
+    position: fixed;
+    width: 10px; height: 10px;
+    z-index: 5;
+    pointer-events: none;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+  }
+
+  /* Color blob following cursor */
+  #color-blob {
+    position: fixed;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ff6b6b, #ff4757 60%, transparent 70%);
+    pointer-events: none;
+    z-index: 15;
+    mix-blend-mode: multiply;
+    filter: blur(2px);
+    transition: left 0.08s, top 0.08s;
+    display: none;
+  }
+
+  /* Extra splatter shapes */
+  .splatter {
+    position: fixed;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    animation: splatIn 0.4s ease-out forwards;
+  }
+
+  @keyframes splatIn {
+    0% { opacity: 0; transform: scale(0) rotate(0deg); }
+    100% { opacity: 0.8; transform: scale(1) rotate(var(--rot)); }
+  }
+</style>
+</head>
+<body>
+
+<!-- GIFT SCREEN -->
+<div id="gift-screen" onclick="unleashHoli()">
+  <h1>You've received a special Holi gift!</h1>
+  <p>From someone who loves you</p>
+  <div class="gift-box">
+    <div class="bow"></div>
+    <div class="lid"></div>
+    <div class="box"></div>
+  </div>
+  <div class="tap-hint">Tap to unwrap your gift</div>
+</div>
+
+<!-- PRANK SCREEN -->
+<div id="prank-screen">
+  <div class="bg-cycle"></div>
+
+  <div class="main-msg">
+    <h1>HAPPY HOLI!</h1>
+    <div class="sub">You've been colored!</div>
+  </div>
+
+  <div class="warning-bar">
+    &#9888; Color stain detected on your screen. Cannot be removed for 24 hours.
+  </div>
+
+  <button class="clean-btn" onclick="cleanScreen()">
+    Tap to Clean Screen
+  </button>
+
+  <div id="color-blob"></div>
+</div>
+
+<script>
+  const COLORS = [
+    '#ff6b6b', '#ff4757', '#ffa502', '#ffd32a', '#2ed573',
+    '#00b894', '#1e90ff', '#a55eea', '#6c5ce7', '#fd79a8',
+    '#e17055', '#00cec9', '#fdcb6e', '#e84393', '#55efc4',
+    '#ff7675', '#74b9ff', '#fab1a0', '#81ecec', '#dfe6e9'
+  ];
+
+  let pranked = false;
+  let cleanAttempts = 0;
+
+  function randomColor() {
+    return COLORS[Math.floor(Math.random() * COLORS.length)];
+  }
+
+  function randomBetween(a, b) {
+    return Math.random() * (b - a) + a;
+  }
+
+  // Create a color splash at position
+  function createSplash(x, y, size) {
+    const el = document.createElement('div');
+    el.className = 'splash';
+    const s = size || randomBetween(60, 200);
+    el.style.cssText = `
+      left: ${x - s/2}px; top: ${y - s/2}px;
+      width: ${s}px; height: ${s}px;
+      background: radial-gradient(circle, ${randomColor()} 0%, ${randomColor()} 60%, transparent 70%);
+      border-radius: ${randomBetween(40,60)}% ${randomBetween(40,60)}% ${randomBetween(40,60)}% ${randomBetween(40,60)}%;
+    `;
+    document.getElementById('prank-screen').appendChild(el);
+  }
+
+  // Create confetti piece
+  function createConfetti() {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    const size = randomBetween(6, 14);
+    const shapes = ['50%', '0%', '2px'];
+    el.style.cssText = `
+      left: ${randomBetween(0, window.innerWidth)}px;
+      top: -20px;
+      width: ${size}px; height: ${size * randomBetween(0.5, 1.5)}px;
+      background: ${randomColor()};
+      border-radius: ${shapes[Math.floor(Math.random() * shapes.length)]};
+      animation-duration: ${randomBetween(2, 5)}s;
+    `;
+    document.getElementById('prank-screen').appendChild(el);
+    setTimeout(() => el.remove(), 5500);
+  }
+
+  // Burst of splashes
+  function burstSplashes(count) {
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        createSplash(
+          randomBetween(0, window.innerWidth),
+          randomBetween(0, window.innerHeight),
+          randomBetween(80, 300)
+        );
+      }, i * 50);
+    }
+  }
+
+  // Confetti rain
+  function startConfetti() {
+    const interval = setInterval(() => {
+      for (let i = 0; i < 3; i++) createConfetti();
+    }, 100);
+    // slow down after 8s
+    setTimeout(() => {
+      clearInterval(interval);
+      setInterval(() => createConfetti(), 300);
+    }, 8000);
+  }
+
+  // Color blob follows cursor/touch
+  function initColorBlob() {
+    const blob = document.getElementById('color-blob');
+    blob.style.display = 'block';
+
+    function moveBlob(x, y) {
+      blob.style.left = (x - 40) + 'px';
+      blob.style.top = (y - 40) + 'px';
+      blob.style.background = `radial-gradient(circle, ${randomColor()}, ${randomColor()} 60%, transparent 70%)`;
+    }
+
+    document.addEventListener('mousemove', e => moveBlob(e.clientX, e.clientY));
+    document.addEventListener('touchmove', e => {
+      e.preventDefault();
+      const t = e.touches[0];
+      moveBlob(t.clientX, t.clientY);
+    }, { passive: false });
+
+    // Also add splashes on touch/click in prank mode
+    document.getElementById('prank-screen').addEventListener('click', e => {
+      createSplash(e.clientX, e.clientY, randomBetween(60, 150));
+    });
+  }
+
+  // THE MAIN EVENT
+  function unleashHoli() {
+    if (pranked) return;
+    pranked = true;
+
+    // Hide gift screen
+    document.getElementById('gift-screen').style.display = 'none';
+
+    // Show prank screen
+    const ps = document.getElementById('prank-screen');
+    ps.classList.add('active');
+
+    // Shake!
+    ps.classList.add('shake');
+    setTimeout(() => ps.classList.remove('shake'), 600);
+
+    // Burst splashes
+    burstSplashes(25);
+
+    // Start confetti
+    startConfetti();
+
+    // Start color blob
+    setTimeout(initColorBlob, 500);
+
+    // Extra bursts
+    setTimeout(() => burstSplashes(10), 1500);
+    setTimeout(() => burstSplashes(8), 3000);
+
+    // Try to play a dhol sound (web audio beep as fallback since we can't bundle audio)
+    playDholBeat();
+  }
+
+  // "Clean" button prank
+  function cleanScreen() {
+    cleanAttempts++;
+
+    const ps = document.getElementById('prank-screen');
+    ps.classList.add('shake');
+    setTimeout(() => ps.classList.remove('shake'), 600);
+
+    // MORE color!
+    burstSplashes(15 + cleanAttempts * 5);
+
+    const btn = document.querySelector('.clean-btn');
+    const msgs = [
+      "Nice try! Here's MORE color!",
+      "You can't escape Holi!",
+      "Haha! Even more colors for you!",
+      "Still trying? HAPPY HOLI!",
+      "Okay okay... just kidding. MORE COLOR!"
+    ];
+    btn.textContent = msgs[Math.min(cleanAttempts - 1, msgs.length - 1)];
+
+    // Reset button text
+    setTimeout(() => {
+      btn.textContent = cleanAttempts < 5 ? "Try Again to Clean" : "Give Up Already!";
+    }, 2000);
+  }
+
+  // Simple audio beat using Web Audio API
+  function playDholBeat() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+      function playBeat(freq, time, dur, type, gain) {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.value = freq;
+        g.gain.setValueAtTime(gain || 0.3, ctx.currentTime + time);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + time + dur);
+        osc.connect(g);
+        g.connect(ctx.destination);
+        osc.start(ctx.currentTime + time);
+        osc.stop(ctx.currentTime + time + dur);
+      }
+
+      // Dhol-like pattern (low beats + high taps)
+      const beats = [
+        [80, 0, 0.3, 'sine', 0.5],
+        [200, 0, 0.15, 'triangle', 0.2],
+        [80, 0.35, 0.25, 'sine', 0.4],
+        [250, 0.5, 0.1, 'triangle', 0.2],
+        [80, 0.7, 0.3, 'sine', 0.5],
+        [200, 0.7, 0.15, 'triangle', 0.2],
+        [90, 1.05, 0.2, 'sine', 0.35],
+        [250, 1.15, 0.1, 'triangle', 0.2],
+        [80, 1.4, 0.3, 'sine', 0.5],
+      ];
+
+      // Play pattern twice
+      beats.forEach(b => playBeat(...b));
+      beats.forEach(b => playBeat(b[0], b[1] + 1.6, b[2], b[3], b[4]));
+
+    } catch(e) { /* audio not supported, no problem */ }
+  }
+</script>
+
+</body>
+</html>
